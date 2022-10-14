@@ -1,9 +1,12 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CartContext } from "../../App";
+import cartCalculation from "../../util/cart-calculation";
 
 const Summary = () => {
   const { cart } = useContext(CartContext);
+  const [shippingCharge, setShippingCharge] = useState(0);
   console.log(cart);
+  const { addedProduct, grandTotal } = cartCalculation(cart);
   return (
     <>
       <div className='container mx-auto mt-10'>
@@ -11,7 +14,7 @@ const Summary = () => {
           <div className='w-3/4 bg-white px-4 py-10'>
             <div className='flex justify-between border-b pb-8 sticky top-0 z-10 bg-white '>
               <h1 className='font-semibold text-2xl'>Shopping Cart</h1>
-              <h2 className='font-semibold text-2xl'>{cart.length} Items</h2>
+              <h2 className='font-semibold text-2xl'>{addedProduct} Items</h2>
             </div>
             <div className='flex mt-10 mb-5'>
               <h3 className='font-semibold text-gray-600 text-xs uppercase w-2/5'>
@@ -56,8 +59,10 @@ const Summary = () => {
               Order Summary
             </h1>
             <div className='flex justify-between mt-10 mb-5'>
-              <span className='font-semibold text-sm uppercase'>Items 3</span>
-              <span className='font-semibold text-sm'>590$</span>
+              <span className='font-semibold text-sm uppercase'>
+                Items {addedProduct}
+              </span>
+              <span className='font-semibold text-sm'>{grandTotal}$</span>
             </div>
             <div>
               <label className='font-medium inline-block mb-3 text-sm uppercase'>
@@ -134,7 +139,10 @@ function SingleProduct({ name, price, picture, quantity }) {
           <path d='M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z' />
         </svg>
       </div>
-      <span className='text-center w-1/5 font-semibold text-sm'>${price}</span>
+      <span className='text-center w-1/5 font-semibold text-sm'>
+        ${price}
+        <span className='text-xs italic'> x{quantity}</span>
+      </span>
       <span className='text-center w-1/5 font-semibold text-sm'>
         ${price * quantity}
       </span>
