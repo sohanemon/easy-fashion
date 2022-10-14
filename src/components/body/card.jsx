@@ -1,24 +1,26 @@
-import { useState } from "react";
+import { useContext } from "react";
+import { CartContext } from "../../App";
 
-const Card = ({ _id, picture, name, price, gender, index }) => {
-  //   const [showImage, setShowImage] = useState(false);
+const Card = (args) => {
+  const { _id, picture, name, price, gender, index } = args;
+  const { setCart } = useContext(CartContext);
+  const handleAddToCart = () => {
+    setCart((p) => {
+      let matchedProduct = p?.find((el) => el._id === _id);
+      if (matchedProduct) {
+        let quantity = matchedProduct.quantity;
+        let otherProducts = p?.filter((el) => el._id !== _id);
+        return [...otherProducts, { ...args, quantity: ++quantity }];
+      } else {
+        return [...p, { ...args, quantity: 1 }];
+      }
+    });
+  };
+
   return (
     <>
-      {/* {showImage ? (
-        <div className='fixed grid place-content-center'>
-          <img
-            onMouseEnter={() => setShowImage(true)}
-            onMouseLeave={() => setShowImage(false)}
-            className='w-96 h-96 border rounded-lg '
-            src={picture}
-            alt={name}
-          />
-        </div>
-      ) : null} */}
       <div className='max-w-[250px] mt-20 rounded-md shadow-md  text-gray-900'>
         <img
-          onMouseEnter={() => setShowImage(true)}
-          onMouseLeave={() => setShowImage(false)}
           src={picture}
           alt=''
           className=' object-cover w-full rounded-t-md h-52 '
@@ -29,6 +31,7 @@ const Card = ({ _id, picture, name, price, gender, index }) => {
             <p className='text-gray-700'>Price: {price}</p>
           </div>
           <button
+            onClick={handleAddToCart}
             type='button'
             className='flex items-center justify-center w-full p-3 font-semibold tracking-wide rounded-md bg-blue-400 text-gray-900'
           >
