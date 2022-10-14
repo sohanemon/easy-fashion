@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { CartContext } from "../../App";
+import { addToLs } from "../../util/local-storage";
 
 const Card = (args) => {
   const { _id, picture, name, price, gender, index } = args;
@@ -8,10 +9,12 @@ const Card = (args) => {
     setCart((p) => {
       let matchedProduct = p?.find((el) => el._id === _id);
       if (matchedProduct) {
-        let quantity = matchedProduct.quantity;
+        let quantity = matchedProduct.quantity + 1;
         let otherProducts = p?.filter((el) => el._id !== _id);
-        return [...otherProducts, { ...args, quantity: ++quantity }];
+        addToLs([...otherProducts, { ...args, quantity }]);
+        return [...otherProducts, { ...args, quantity }];
       } else {
+        addToLs([...p, { ...args, quantity: 1 }]);
         return [...p, { ...args, quantity: 1 }];
       }
     });

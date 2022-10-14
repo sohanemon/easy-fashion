@@ -13,7 +13,6 @@ function App() {
       .then((data) => setProducts(data));
     return () => {};
   }, []);
-  console.log(cart);
   return (
     <ProductsContext.Provider value={products}>
       <CartContext.Provider value={{ cart, setCart }}>
