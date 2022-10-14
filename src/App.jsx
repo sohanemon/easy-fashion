@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { RouterProvider } from "react-router-dom";
 import router from "./router";
+import { getFromLs } from "./util/local-storage";
 
 export const ProductsContext = createContext([]);
 export const CartContext = createContext([]);
@@ -10,7 +11,11 @@ function App() {
   useEffect(() => {
     fetch("./data.json")
       .then((res) => res.json())
-      .then((data) => setProducts(data));
+      .then((data) => {
+        setProducts(data);
+
+        setCart(getFromLs(data));
+      });
     return () => {};
   }, []);
   return (

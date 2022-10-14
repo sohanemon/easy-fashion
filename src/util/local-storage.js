@@ -6,4 +6,15 @@ const addToLs = (cart) => {
   });
   localStorage.setItem(key, JSON.stringify(products));
 };
-export { addToLs };
+
+const getFromLs = (allProducts) => {
+  const cart = JSON.parse(localStorage.getItem(key));
+  const loadedData = [];
+  for (const i in cart) {
+    const matchedProduct = allProducts.find((el) => i === el._id);
+    loadedData.push({ ...matchedProduct, quantity: cart[i] });
+  }
+  return loadedData;
+};
+
+export { addToLs, getFromLs };

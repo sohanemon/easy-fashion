@@ -1,4 +1,9 @@
+import { useContext } from "react";
+import { CartContext } from "../../App";
+
 const Summary = () => {
+  const { cart } = useContext(CartContext);
+  console.log(cart);
   return (
     <>
       <div className='container mx-auto mt-10'>
