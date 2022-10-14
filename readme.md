@@ -15,4 +15,10 @@ consider data as `const data = ["home", "products", "contact", "about"];`
 to={el === "home" ? "" : el}
 ```
 
+## sometimes height requires in sticky element
+
+```
+style={{ position: "sticky", top: "0px" , height: '100vh'}}
+```
+
 > sticky may rarely on grid items
