@@ -1,7 +1,8 @@
 import { useContext } from "react";
+import { toast } from "react-toastify";
 import { CartContext } from "../../App";
 import { addToLs } from "../../util/local-storage";
-
+import "react-toastify/dist/ReactToastify.css";
 const Card = (args) => {
   const { _id, picture, name, price, gender, index } = args;
   const { setCart } = useContext(CartContext);
@@ -18,6 +19,7 @@ const Card = (args) => {
         return [...p, { ...args, quantity: 1 }];
       }
     });
+    toast("added successfully");
   };
 
   return (

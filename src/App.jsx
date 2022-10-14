@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import router from "./router";
 import { getFromLs } from "./util/local-storage";
 
@@ -21,6 +22,7 @@ function App() {
   return (
     <ProductsContext.Provider value={products}>
       <CartContext.Provider value={{ cart, setCart }}>
+        <ToastContainer />
         <div>
           <RouterProvider router={router} />
         </div>

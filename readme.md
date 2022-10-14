@@ -14,3 +14,5 @@ consider data as `const data = ["home", "products", "contact", "about"];`
 
 to={el === "home" ? "" : el}
 ```
+
+> sticky may rarely on grid items
