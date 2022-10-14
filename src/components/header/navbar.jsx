@@ -28,7 +28,7 @@ const Navbar = () => {
                     pathname === `/${el}` || (pathname === "/" && el === "home")
                       ? "border-b-2"
                       : ""
-                  } flex items-center px-4 -mb-1  border-transparent text-blue-400 border-blue-400`}
+                  } flex items-center px-4 -mb-1  border-transparent text-blue-400 border-blue-400 capitalize`}
                 >
                   {el}
                 </Link>
@@ -65,4 +65,4 @@ const Navbar = () => {
 
 export default Navbar;
 
-const data = ["home", "products", "contact", "about"];
+const data = ["home", "products", "cart", "contact", "about"];
