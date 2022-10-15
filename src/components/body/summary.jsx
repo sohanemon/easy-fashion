@@ -1,37 +1,40 @@
 import { useContext, useRef, useState, useEffect } from "react";
 import { CartContext } from "../../App";
 import cartCalculation from "../../util/cart-calculation";
+import { addToLs } from "../../util/local-storage";
 import MyModal from "./modal";
 
 const Summary = () => {
   const { cart } = useContext(CartContext);
   const [shippingCharge, setShippingCharge] = useState(0);
   const { addedProduct, grandTotal } = cartCalculation(cart);
-  console.log(grandTotal);
   const [modalState, setModalState] = useState({
     cost: grandTotal && (parseFloat(grandTotal) + 10).toFixed(2),
     isOpen: false,
   });
-  console.log(cart);
   const shippingRef = useRef(null);
-  const handleApply = () => {
-    let cost = grandTotal + shippingRef.current.value;
+  const couponRef = useRef(null);
+  const handleApply = (modal) => {
+    let cost = grandTotal + parseInt(shippingRef.current.value);
     let discount = 0;
-    if (
-      couponRef.current.value === "emonman" ||
-      couponRef.current.value === "EmonMan"
-    ) {
+    if (couponRef.current.value.toLowerCase() === "emonman") {
       discount = parseFloat(cost) * 0.99;
     }
     setModalState((p) => {
-      return { cost: cost - discount, isOpen: true };
+      return {
+        cost: (cost - discount).toFixed(2),
+        isOpen: modal ? true : false,
+      };
     });
   };
-  const couponRef = useRef(null);
+  useEffect(() => {
+    handleApply(false);
+    return () => {};
+  }, []);
 
   return (
     <>
-      <div className='container mx-auto mt-10'>
+      <div className='container mx-auto mt-10 select-none'>
         <div className='flex shadow-md my-10'>
           <div className='w-3/4 bg-white px-4 py-10'>
             <div className='flex justify-between border-b pb-8 sticky top-0 z-10 bg-white '>
@@ -92,6 +95,7 @@ const Summary = () => {
                 Shipping
               </label>
               <select
+                onChange={() => handleApply(false)}
                 ref={shippingRef}
                 className='block p-2 text-gray-600 w-full text-sm'
               >
@@ -116,7 +120,7 @@ const Summary = () => {
               />
             </div>
             <button
-              onClick={handleApply}
+              onClick={() => handleApply(true)}
               className='bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase'
             >
               Apply
@@ -139,7 +143,27 @@ const Summary = () => {
 
 export default Summary;
 
-function SingleProduct({ name, price, picture, quantity }) {
+function SingleProduct(args) {
+  const { setCart } = useContext(CartContext);
+  const { name, price, picture, quantity, _id } = args;
+  const handleIncrease = (condition) => {
+    setCart((p) => {
+      let matchedProduct = p?.find((el) => el._id === _id);
+      if (matchedProduct) {
+        let quantity;
+        if (!condition && matchedProduct.quantity > 1) {
+          quantity = matchedProduct.quantity - 1;
+        } else if (!condition && matchedProduct.quantity === 1) {
+          quantity = matchedProduct.quantity;
+        } else {
+          quantity = matchedProduct.quantity + 1;
+        }
+        let otherProducts = p?.filter((el) => el._id !== _id);
+        addToLs([...otherProducts, { ...args, quantity }]);
+        return [...otherProducts, { ...args, quantity }];
+      }
+    });
+  };
   return (
     <div className='flex items-center hover:bg-gray-100 -mx-8 px-6 py-5'>
       <div className='flex w-2/5'>
@@ -157,17 +181,25 @@ function SingleProduct({ name, price, picture, quantity }) {
         </div>
       </div>
       <div className='flex justify-center w-1/5'>
-        <svg className='fill-current text-gray-600 w-3' viewBox='0 0 448 512'>
+        <svg
+          onClick={() => handleIncrease(false)}
+          className='fill-current text-gray-600 w-3 cursor-pointer'
+          viewBox='0 0 448 512'
+        >
           <path d='M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z' />
         </svg>
-
         <input
-          className='mx-2 border text-center w-8'
+          disabled
+          className='mx-2 border text-center w-8 '
           type='text'
           value={quantity}
         />
 
-        <svg className='fill-current text-gray-600 w-3' viewBox='0 0 448 512'>
+        <svg
+          onClick={() => handleIncrease(true)}
+          className='fill-current text-gray-600 w-3 cursor-pointer'
+          viewBox='0 0 448 512'
+        >
           <path d='M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z' />
         </svg>
       </div>
