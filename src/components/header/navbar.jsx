@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const { pathname } = useLocation();
+  console.log(pathname);
   return (
     <>
       <header className='p-4 bg-gray-800 text-gray-100'>
@@ -22,13 +23,14 @@ const Navbar = () => {
             {data.map((el) => (
               <li key={el} className='flex'>
                 <Link
+                  style={
+                    pathname === `/${el}` || (pathname === "/" && el === "home")
+                      ? { borderBottom: "2px solid" }
+                      : {}
+                  }
                   rel='noopener noreferrer'
                   to={el === "home" ? "" : el}
-                  className={`${
-                    pathname === `/${el}` || (pathname === "/" && el === "home")
-                      ? "border-b-2"
-                      : ""
-                  } flex items-center px-4 -mb-1  border-transparent text-blue-400 border-blue-400 capitalize`}
+                  className={`flex items-center px-4 -mb-1  border-transparent text-blue-400 border-blue-400 capitalize`}
                 >
                   {el}
                 </Link>
