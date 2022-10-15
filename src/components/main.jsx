@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import InfoBox from "./body/infoBox";
 import Navbar from "./header/navbar";
 
 const Main = () => {
@@ -6,6 +7,7 @@ const Main = () => {
     <>
       <Navbar />
       <Outlet />
+      <InfoBox />
     </>
   );
 };

@@ -1,12 +1,34 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState, useEffect } from "react";
 import { CartContext } from "../../App";
 import cartCalculation from "../../util/cart-calculation";
+import MyModal from "./modal";
 
 const Summary = () => {
   const { cart } = useContext(CartContext);
   const [shippingCharge, setShippingCharge] = useState(0);
-  console.log(cart);
   const { addedProduct, grandTotal } = cartCalculation(cart);
+  console.log(grandTotal);
+  const [modalState, setModalState] = useState({
+    cost: grandTotal && (parseFloat(grandTotal) + 10).toFixed(2),
+    isOpen: false,
+  });
+  console.log(cart);
+  const shippingRef = useRef(null);
+  const handleApply = () => {
+    let cost = grandTotal + shippingRef.current.value;
+    let discount = 0;
+    if (
+      couponRef.current.value === "emonman" ||
+      couponRef.current.value === "EmonMan"
+    ) {
+      discount = parseFloat(cost) * 0.99;
+    }
+    setModalState((p) => {
+      return { cost: cost - discount, isOpen: true };
+    });
+  };
+  const couponRef = useRef(null);
+
   return (
     <>
       <div className='container mx-auto mt-10'>
@@ -14,6 +36,7 @@ const Summary = () => {
           <div className='w-3/4 bg-white px-4 py-10'>
             <div className='flex justify-between border-b pb-8 sticky top-0 z-10 bg-white '>
               <h1 className='font-semibold text-2xl'>Shopping Cart</h1>
+              <MyModal modalState={modalState} setModalState={setModalState} />
               <h2 className='font-semibold text-2xl'>{addedProduct} Items</h2>
             </div>
             <div className='flex mt-10 mb-5'>
@@ -68,8 +91,13 @@ const Summary = () => {
               <label className='font-medium inline-block mb-3 text-sm uppercase'>
                 Shipping
               </label>
-              <select className='block p-2 text-gray-600 w-full text-sm'>
-                <option>Standard shipping - $10.00</option>
+              <select
+                ref={shippingRef}
+                className='block p-2 text-gray-600 w-full text-sm'
+              >
+                <option value={10}>Standard - $10.00</option>
+                <option value={20}>Fast - $20.00</option>
+                <option value={30}>Super Fast - $30.00</option>
               </select>
             </div>
             <div className='py-10'>
@@ -80,19 +108,23 @@ const Summary = () => {
                 Promo Code
               </label>
               <input
+                ref={couponRef}
                 type='text'
                 id='promo'
                 placeholder='Enter your code'
                 className='p-2 text-sm w-full'
               />
             </div>
-            <button className='bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase'>
+            <button
+              onClick={handleApply}
+              className='bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase'
+            >
               Apply
             </button>
             <div className='border-t mt-8'>
               <div className='flex font-semibold justify-between py-6 text-sm uppercase'>
                 <span>Total cost</span>
-                <span>$600</span>
+                <span>${modalState.cost ? modalState.cost : ""}</span>
               </div>
               <button className='bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full'>
                 Checkout
